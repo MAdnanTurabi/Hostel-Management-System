@@ -19,24 +19,18 @@ public class LoginPage extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new GridLayout(6, 1));
 
-        // Components
         String[] userTypes = {"Student", "Warden", "Admin"};
         userTypeComboBox = new JComboBox<>(userTypes);
         usernameField = new JTextField();
         passwordField = new JPasswordField();
         loginButton = new JButton("Login");
 
-        // Initially hide username & password fields
         usernameField.setVisible(false);
         passwordField.setVisible(false);
 
-        // Show fields only if "Student" is selected
         userTypeComboBox.addActionListener(e -> toggleFields());
-
-        // Login Button Action
         loginButton.addActionListener(e -> loginUser());
 
-        // Layout
         add(userTypeComboBox);
         add(new JLabel("Username:", SwingConstants.CENTER));
         add(usernameField);
@@ -44,7 +38,6 @@ public class LoginPage extends JFrame {
         add(passwordField);
         add(loginButton);
 
-        // Show Frame
         setLocationRelativeTo(null);
         setVisible(true);
     }
@@ -69,10 +62,12 @@ public class LoginPage extends JFrame {
                 return;
             }
 
-            if (validateStudentLogin(username, password)) {
+            Integer studentId = validateStudentLogin(username, password);
+
+            if (studentId != null) {
                 JOptionPane.showMessageDialog(this, "Login Successful!");
                 dispose();
-                SwingUtilities.invokeLater(() -> new StudentDashboard().setVisible(true)); // Redirect to Student Dashboard
+                SwingUtilities.invokeLater(() -> new StudentDashboard(studentId).setVisible(true)); 
             } else {
                 JOptionPane.showMessageDialog(this, "Invalid Credentials!", "Error", JOptionPane.ERROR_MESSAGE);
             }
@@ -81,15 +76,15 @@ public class LoginPage extends JFrame {
         }
     }
 
-    private boolean validateStudentLogin(String username, String password) {
-        String url = "jdbc:mysql://localhost:3306/HostelManagement"; // Check DB Name
+    private Integer validateStudentLogin(String username, String password) {
+        String url = "jdbc:mysql://localhost:3306/HostelManagement"; 
         String user = "root";
-        String pass = "1234"; // Ensure this is correct
+        String pass = "1234";
 
         try (Connection conn = DriverManager.getConnection(url, user, pass)) {
-            System.out.println("Connected to database successfully!"); // Debugging Log
+            System.out.println("Connected to database successfully!"); 
 
-            String query = "SELECT password FROM students WHERE username = ?";
+            String query = "SELECT student_id, password FROM students WHERE username = ?";
             try (PreparedStatement pstmt = conn.prepareStatement(query)) {
                 pstmt.setString(1, username);
                 try (ResultSet rs = pstmt.executeQuery()) {
@@ -97,10 +92,11 @@ public class LoginPage extends JFrame {
                         String storedHashedPassword = rs.getString("password");
                         String inputHashedPassword = hashPassword(password);
 
-                        System.out.println("Stored Hash: " + storedHashedPassword); // Debugging Log
-                        System.out.println("Input Hash: " + inputHashedPassword); // Debugging Log
-
-                        return storedHashedPassword.equals(inputHashedPassword);
+                        System.out.println("Stored Hash: " + storedHashedPassword); 
+                        System.out.println("Input Hash: " + inputHashedPassword); 
+                        if (storedHashedPassword.equals(inputHashedPassword)) {
+                            return rs.getInt("student_id"); 
+                        }
                     }
                 }
             }
@@ -108,7 +104,7 @@ public class LoginPage extends JFrame {
             JOptionPane.showMessageDialog(this, "Database Error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
         }
-        return false;
+        return null; 
     }
 
     private String hashPassword(String password) {
@@ -122,7 +118,7 @@ public class LoginPage extends JFrame {
             return hexString.toString();
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
-            return password; // Return plaintext in case of error
+            return password; 
         }
     }
 

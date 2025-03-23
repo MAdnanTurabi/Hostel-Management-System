@@ -49,14 +49,14 @@ public class StudentRegister extends JFrame {
         addLabelAndField("Password", 542, 245, passwordField = new JPasswordField());
         addLabelAndField("Mobile Number", 542, 329, mob = new JTextField());
 
-        // Register Button
+       
         btnRegister = new JButton("Register");
         btnRegister.setFont(new Font("Tahoma", Font.PLAIN, 22));
         btnRegister.setBounds(350, 447, 259, 50);
         contentPane.add(btnRegister);
         btnRegister.addActionListener(this::registerStudent);
 
-        // Exit Button
+        
         btnExit = new JButton("Exit");
         btnExit.setFont(new Font("Tahoma", Font.PLAIN, 20));
         btnExit.setBounds(750, 500, 100, 40);
@@ -127,7 +127,7 @@ public class StudentRegister extends JFrame {
         });
 
         System.out.println("Closing StudentRegister window...");
-        this.dispose(); // Close the registration window
+        this.dispose(); 
     }
 
     private String hashPassword(String password) {
