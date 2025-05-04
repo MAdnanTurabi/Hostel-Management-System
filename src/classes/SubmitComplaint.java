@@ -53,7 +53,7 @@ public class SubmitComplaint extends JFrame {
                 int rowsInserted = pst.executeUpdate();
                 if (rowsInserted > 0) {
                     JOptionPane.showMessageDialog(this, "Complaint submitted successfully!");
-                    dispose(); // Close the current window
+                    dispose(); 
                 } else {
                     JOptionPane.showMessageDialog(this, "Error: Could not submit the complaint.");
                 }
@@ -65,6 +65,6 @@ public class SubmitComplaint extends JFrame {
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new SubmitComplaint(1)); // Pass a valid studentID
+        SwingUtilities.invokeLater(() -> new SubmitComplaint(1));
     }
 }

@@ -44,7 +44,7 @@ public class SubmitMisconduct extends JFrame {
         }
 
        
-        try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/HostelManagement", "root", "1234");
+        try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/hostel_management", "root", "1234");
              PreparedStatement stmt = conn.prepareStatement("INSERT INTO misconduct_reports (student_id, description) VALUES (?, ?)")) {
 
             stmt.setInt(1, studentId);

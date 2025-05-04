@@ -9,11 +9,11 @@ public class StudentDashboard extends JFrame {
     public StudentDashboard(int studentID) {
         this.studentID = studentID;
         setTitle("Student Dashboard");
-        setSize(400, 600); // Increased height to accommodate new buttons
+        setSize(400, 650); 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new GridLayout(12, 1)); // Increased row count for additional buttons
+        setLayout(new GridLayout(13, 1)); 
 
-        // Create buttons for various functionalities
+      
         JButton profileButton = new JButton("View Profile");
         JButton roomDetailsButton = new JButton("View Room Details");
         JButton viewComplaintsButton = new JButton("View Complaints");
@@ -22,12 +22,14 @@ public class StudentDashboard extends JFrame {
         JButton viewMisconductButton = new JButton("View Misconduct Reports");
         JButton maintenanceRequestButton = new JButton("Submit Maintenance Request");
         JButton viewMaintenanceRequestsButton = new JButton("View Maintenance Requests");
-        JButton submitVisitorRequestButton = new JButton("Submit Visitor Request"); // NEW
-        JButton viewVisitorRequestStatusButton = new JButton("View Visitor Request Status"); // NEW
+        JButton submitVisitorRequestButton = new JButton("Submit Visitor Request");
+        JButton viewVisitorRequestStatusButton = new JButton("View Visitor Request Status");
         JButton submitFeedbackButton = new JButton("Submit Feedback");
+        JButton viewVisitorRulesButton = new JButton("View Visitor Rules");
+        JButton viewFacilityTimingsButton = new JButton("View Facility Timings"); 
         JButton logoutButton = new JButton("Logout");
 
-        // Add action listeners for button clicks
+       
         profileButton.addActionListener(e -> openProfilePage());
         roomDetailsButton.addActionListener(e -> openRoomDetailsPage());
         viewComplaintsButton.addActionListener(e -> openViewComplaintsPage());
@@ -36,12 +38,14 @@ public class StudentDashboard extends JFrame {
         viewMisconductButton.addActionListener(e -> openViewMisconductPage());
         maintenanceRequestButton.addActionListener(e -> openMaintenanceRequestPage());
         viewMaintenanceRequestsButton.addActionListener(e -> openViewMaintenanceRequestsPage());
-        submitVisitorRequestButton.addActionListener(e -> openSubmitVisitorRequestPage()); // NEW
-        viewVisitorRequestStatusButton.addActionListener(e -> openViewVisitorRequestStatusPage()); // NEW
+        submitVisitorRequestButton.addActionListener(e -> openSubmitVisitorRequestPage());
+        viewVisitorRequestStatusButton.addActionListener(e -> openViewVisitorRequestStatusPage());
         submitFeedbackButton.addActionListener(e -> openSubmitFeedbackPage());
+        viewVisitorRulesButton.addActionListener(e -> new ViewVisitorRulesPage(studentID));
+        viewFacilityTimingsButton.addActionListener(e -> openFacilityTimingsPage()); // NEW
         logoutButton.addActionListener(e -> logout());
 
-        // Add buttons to the layout
+        
         add(profileButton);
         add(roomDetailsButton);
         add(viewComplaintsButton);
@@ -50,23 +54,25 @@ public class StudentDashboard extends JFrame {
         add(viewMisconductButton);
         add(maintenanceRequestButton);
         add(viewMaintenanceRequestsButton);
-        add(submitVisitorRequestButton); // NEW
-        add(viewVisitorRequestStatusButton); // NEW
+        add(submitVisitorRequestButton);
+        add(viewVisitorRequestStatusButton);
         add(submitFeedbackButton);
+        add(viewVisitorRulesButton);
+        add(viewFacilityTimingsButton); 
         add(logoutButton);
 
-        // Center the window
+       
         setLocationRelativeTo(null);
         setVisible(true);
     }
 
-    // Methods to open the corresponding pages
+    
     private void openProfilePage() {
-        JOptionPane.showMessageDialog(this, "Student Profile Page (To be implemented)");
+        SwingUtilities.invokeLater(() -> new ViewProfile(studentID));
     }
 
     private void openRoomDetailsPage() {
-        JOptionPane.showMessageDialog(this, "Room Details Page (To be implemented)");
+        SwingUtilities.invokeLater(() -> new ViewRoomDetails(studentID));
     }
 
     private void openViewComplaintsPage() {
@@ -105,8 +111,12 @@ public class StudentDashboard extends JFrame {
         SwingUtilities.invokeLater(() -> new SubmitFeedback(studentID));
     }
 
+    private void openFacilityTimingsPage() {
+        SwingUtilities.invokeLater(() -> new ViewFacilityTimingsPage(studentID));
+    }
+
     private void logout() {
-        dispose(); // Close the current window
+        dispose(); 
         SwingUtilities.invokeLater(() -> new LoginPage());
     }
 

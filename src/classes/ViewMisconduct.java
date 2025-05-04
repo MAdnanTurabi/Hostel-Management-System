@@ -36,7 +36,7 @@ public class ViewMisconduct extends JFrame {
         StringBuilder reportsText = new StringBuilder();
 
       
-        try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/HostelManagement", "root", "1234");
+        try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/hostel_management", "root", "1234");
              PreparedStatement stmt = conn.prepareStatement("SELECT report_id, description, report_date FROM misconduct_reports WHERE student_id = ?")) {
 
             stmt.setInt(1, studentId);

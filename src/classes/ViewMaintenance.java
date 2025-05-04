@@ -6,10 +6,10 @@ import java.sql.*;
 
 public class ViewMaintenance extends JFrame {
     private JTextArea maintenanceRequestsArea;
-    private int studentId;
+    private static int studentID;
 
     public ViewMaintenance(int studentId) {
-        this.studentId = studentId;
+        this.studentID = studentId;
 
         setTitle("View Maintenance Requests");
         setSize(400, 300);
@@ -29,24 +29,38 @@ public class ViewMaintenance extends JFrame {
     }
 
     private void loadMaintenanceRequests() {
-        try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/HostelManagement", "root", "1234");
-             PreparedStatement stmt = conn.prepareStatement("SELECT issue_description, status, request_date FROM maintenance_requests WHERE student_id = ?")) {
+        String url = "jdbc:mysql://localhost:3306/hostel_management";
+        String user = "root";
+        String password = "1234";
 
-            stmt.setInt(1, studentId);
+        String query = "SELECT issue_description, status FROM maintenance_requests WHERE student_id = ?";
+
+        try (Connection conn = DriverManager.getConnection(url, user, password);
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setInt(1, studentID);
             ResultSet rs = stmt.executeQuery();
 
             StringBuilder sb = new StringBuilder();
             while (rs.next()) {
-                sb.append("Date: ").append(rs.getTimestamp("request_date"))
-                        .append("\nIssue: ").append(rs.getString("issue_description"))
-                        .append("\nStatus: ").append(rs.getString("status"))
+                String issue = rs.getString("issue_description");
+                String status = rs.getString("status");
+
+                sb.append("Issue: ").append(issue)
+                        .append("\nStatus: ").append(status)
                         .append("\n--------------------------\n");
             }
 
             maintenanceRequestsArea.setText(sb.length() > 0 ? sb.toString() : "No maintenance requests found.");
         } catch (SQLException ex) {
             ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Error fetching maintenance requests.", "Database Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+   
+    public static void main(String[] args) {
+
+		SwingUtilities.invokeLater(() -> new ViewMaintenance(studentID)); 
     }
 }

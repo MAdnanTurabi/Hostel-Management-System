@@ -1,6 +1,7 @@
 package classes;
 
 import javax.swing.*;
+import javax.swing.text.BadLocationException;
 import java.awt.*;
 import java.awt.event.*;
 import java.sql.*;
@@ -18,23 +19,23 @@ public class VisitorRequestPage extends JFrame {
         setTitle("Visitor Request");
         setSize(400, 350);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setLayout(new GridLayout(6, 1)); // Grid with 6 rows for components
+        setLayout(new GridLayout(6, 1)); 
 
-        // Label and text field for visitor name
+        
         JLabel visitorNameLabel = new JLabel("Visitor's Name:");
         visitorNameLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
         visitorNameField = new JTextField();
         add(visitorNameLabel);
         add(visitorNameField);
 
-        // Label and text field for visitor contact
+        
         JLabel visitorContactLabel = new JLabel("Visitor's Contact Number:");
         visitorContactLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
         visitorContactField = new JTextField();
         add(visitorContactLabel);
         add(visitorContactField);
 
-        // Label and text area for visitor reason
+       
         JLabel visitorReasonLabel = new JLabel("Reason for Visit:");
         visitorReasonLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
         visitorReasonArea = new JTextArea();
@@ -42,17 +43,25 @@ public class VisitorRequestPage extends JFrame {
         visitorReasonArea.setRows(4);
         visitorReasonArea.setWrapStyleWord(true);
         visitorReasonArea.setLineWrap(true);
+        visitorReasonArea.setDocument(new javax.swing.text.PlainDocument() {
+            @Override
+            public void insertString(int offs, String str, javax.swing.text.AttributeSet a) throws BadLocationException {
+                if (getLength() + str.length() <= 150) {
+                    super.insertString(offs, str, a);
+                }
+            }
+        });
         JScrollPane scrollPane = new JScrollPane(visitorReasonArea);
         add(visitorReasonLabel);
         add(scrollPane);
 
-        // Submit request button
+        
         submitRequestButton = new JButton("Submit Visitor Request");
         submitRequestButton.setFont(new Font("Tahoma", Font.PLAIN, 18));
         submitRequestButton.addActionListener(this::submitVisitorRequest);
         add(submitRequestButton);
 
-        // Set window location and visibility
+        
         setLocationRelativeTo(null);
         setVisible(true);
     }
@@ -62,13 +71,19 @@ public class VisitorRequestPage extends JFrame {
         String visitorContact = visitorContactField.getText();
         String visitorReason = visitorReasonArea.getText();
 
-        // Validate input
+     
         if (visitorName.isEmpty() || visitorContact.isEmpty() || visitorReason.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Please fill in all fields.");
             return;
         }
 
-        // Save request to the database
+        
+        if (visitorContact.length() != 10 || !visitorContact.matches("\\d{10}")) {
+            JOptionPane.showMessageDialog(this, "Visitor's contact number must be 10 digits.");
+            return;
+        }
+
+       
         try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/hostel_management", "root", "1234")) {
             String query = "INSERT INTO visitor_requests (student_id, visitor_name, visitor_contact, reason_for_visit, request_date) VALUES (?, ?, ?, ?, NOW())";
             PreparedStatement pst = connection.prepareStatement(query);
@@ -80,7 +95,7 @@ public class VisitorRequestPage extends JFrame {
             int rowsInserted = pst.executeUpdate();
             if (rowsInserted > 0) {
                 JOptionPane.showMessageDialog(this, "Visitor request submitted successfully!");
-                this.dispose(); // Close the request page
+                this.dispose(); 
             } else {
                 JOptionPane.showMessageDialog(this, "Error submitting request.");
             }

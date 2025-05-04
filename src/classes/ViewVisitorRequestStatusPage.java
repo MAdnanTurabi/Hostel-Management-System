@@ -13,7 +13,7 @@ public class ViewVisitorRequestStatusPage extends JFrame {
     private static final String DB_PASSWORD = "1234";
     
     private JTable requestStatusTable;
-    private int studentID;
+    private static int studentID;
 
     public ViewVisitorRequestStatusPage(int studentID) {
         this.studentID = studentID;
@@ -23,21 +23,21 @@ public class ViewVisitorRequestStatusPage extends JFrame {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        // Initialize the table to display the request status
+    
         requestStatusTable = new JTable();
         JScrollPane scrollPane = new JScrollPane(requestStatusTable);
         add(scrollPane, BorderLayout.CENTER);
 
-        // Load visitor request status
+  
         loadRequestStatus();
 
-        // Set window location and visibility
+       
         setLocationRelativeTo(null);
         setVisible(true);
     }
 
     private void loadRequestStatus() {
-        // Create a model for the table
+    
         DefaultTableModel model = new DefaultTableModel(new Object[]{"Request ID", "Visitor Name", "Reason for Visit", "Request Date", "Status"}, 0);
         
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
@@ -65,7 +65,7 @@ public class ViewVisitorRequestStatusPage extends JFrame {
     }
 
     public static void main(String[] args) {
-        // Example studentID for testing
-        SwingUtilities.invokeLater(() -> new ViewVisitorRequestStatusPage(1));
+        
+        SwingUtilities.invokeLater(() -> new ViewVisitorRequestStatusPage(studentID));
     }
 }

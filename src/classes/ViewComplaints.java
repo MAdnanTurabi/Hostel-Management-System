@@ -9,7 +9,7 @@ import java.util.*;
 public class ViewComplaints extends JFrame {
     private JList<String> complaintsList;
     private DefaultListModel<String> listModel;
-    private int studentID;
+    private static int studentID;
 
     public ViewComplaints(int studentID) {
         this.studentID = studentID;
@@ -41,7 +41,7 @@ public class ViewComplaints extends JFrame {
                 pst.setInt(1, studentID);
 
                 try (ResultSet rs = pst.executeQuery()) {
-                    listModel.clear();  // Clear the list model before adding data
+                    listModel.clear();  
 
                     while (rs.next()) {
                         String complaintText = rs.getString("complaint_text");
@@ -59,6 +59,6 @@ public class ViewComplaints extends JFrame {
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new ViewComplaints(1)); // Pass a valid studentID
+        SwingUtilities.invokeLater(() -> new ViewComplaints(studentID)); 
     }
 }

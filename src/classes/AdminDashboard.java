@@ -15,41 +15,58 @@ public class AdminDashboard extends JFrame {
         titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
         add(titleLabel, BorderLayout.NORTH);
 
-        // Create panel for buttons
+        
         JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new GridLayout(6, 1, 10, 10));
+        buttonPanel.setLayout(new GridLayout(9, 1, 10, 10)); 
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
 
-        // Buttons
+        //Buttons
         JButton roomAppButton = new JButton("Approve/Reject Room Applications");
         JButton facilityButton = new JButton("Facility Management");
         JButton maintenanceButton = new JButton("Maintenance");
-        JButton paymentsButton = new JButton("Payments");
-        JButton checkInOutButton = new JButton("Check-In / Check-Out");
         JButton visitorRulesButton = new JButton("Visitor Rules & Timings");
+        JButton manageRoomsButton = new JButton("Manage Rooms");
+        JButton visitorRequestButton = new JButton("Approve/Reject Visitor Requests");
+        JButton viewRoomsButton = new JButton("View All Rooms");  
 
-        // Button Actions
-        roomAppButton.addActionListener(e -> JOptionPane.showMessageDialog(this, "Room Application Management - To Be Implemented"));
-        facilityButton.addActionListener(e -> JOptionPane.showMessageDialog(this, "Facility Management - To Be Implemented"));
-        maintenanceButton.addActionListener(e -> JOptionPane.showMessageDialog(this, "Maintenance Requests - To Be Implemented"));
-        paymentsButton.addActionListener(e -> JOptionPane.showMessageDialog(this, "Payments Module - To Be Implemented"));
-        checkInOutButton.addActionListener(e -> JOptionPane.showMessageDialog(this, "Check-In / Check-Out - To Be Implemented"));
+        
+        JButton logoutButton = new JButton("Logout");
 
-        // ✅ Actual redirection to VisitorRulesManager
+        //Button Actions
+        roomAppButton.addActionListener(e -> new RoomApplicationsPage());
+        facilityButton.addActionListener(e -> new FacilityManagementPage());
+        maintenanceButton.addActionListener(e -> new MaintenancePage());
         visitorRulesButton.addActionListener(e -> new VisitorRulesManager());
+        visitorRequestButton.addActionListener(e -> new VisitorRequestApprovalPage());
+        manageRoomsButton.addActionListener(e -> new ManageRoomsPage());
+        viewRoomsButton.addActionListener(e -> new ViewRoomsPage()); 
 
-        // Add buttons to panel
+        
+        logoutButton.addActionListener(e -> {
+            dispose(); 
+            new LoginPage(); 
+        });
+
+       
         buttonPanel.add(roomAppButton);
         buttonPanel.add(facilityButton);
         buttonPanel.add(maintenanceButton);
-        buttonPanel.add(paymentsButton);
-        buttonPanel.add(checkInOutButton);
         buttonPanel.add(visitorRulesButton);
+        buttonPanel.add(manageRoomsButton);
+        buttonPanel.add(visitorRequestButton);
+        buttonPanel.add(viewRoomsButton); 
 
-        // Add panel to frame
+        
+        buttonPanel.add(logoutButton);
+
+        
         add(buttonPanel, BorderLayout.CENTER);
 
         setLocationRelativeTo(null);
         setVisible(true);
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(AdminDashboard::new);
     }
 }

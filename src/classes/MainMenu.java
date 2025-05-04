@@ -14,8 +14,7 @@ public class MainMenu extends JFrame {
         JButton registerButton = new JButton("Register");
         JButton exitButton = new JButton("Exit");
 
-        loginButton.addActionListener(e -> {
-            dispose();
+        loginButton.addActionListener(e -> {            dispose();
             SwingUtilities.invokeLater(LoginPage::new);
         });
 
@@ -32,7 +31,7 @@ public class MainMenu extends JFrame {
                     options[0]
             );
 
-            if (choice == 0) { // Student
+            if (choice == 0) { 
                 dispose();
                 SwingUtilities.invokeLater(() -> new StudentRegister().setVisible(true));
             } else {

@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.swing.*;
 
@@ -79,58 +80,85 @@ public class StudentRegister extends JFrame {
         String userName = username.getText();
         String mobileNumber = mob.getText();
         String password = new String(passwordField.getPassword());
-        
-        // Validate inputs
+
+       
         if (firstName.isEmpty() || lastName.isEmpty() || emailId.isEmpty() ||
             userName.isEmpty() || mobileNumber.isEmpty() || password.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Please fill all fields!");
             return;
         }
 
-        if (mobileNumber.length() != 10) {
+     
+        if (mobileNumber.length() != 10 || !mobileNumber.matches("\\d{10}")) {
             JOptionPane.showMessageDialog(this, "Enter a valid 10-digit mobile number");
             return;
         }
 
-        try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/hostel_management", "root", "1234")) {
-            // Do not hash the password, store it as plain text
-            String plainPassword = password;  // No hashing
+        
+        if (!emailId.endsWith("@gmail.com")) {
+            JOptionPane.showMessageDialog(this, "Please enter a valid Gmail address ending with @gmail.com");
+            return;
+        }
 
-            // Prepare the SQL query with username and room_number included
-            String query = "INSERT INTO students (first_name, last_name, email, username, password, mobile_number, room_number) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        
+        try (Connection connection = DriverManager.getConnection(
+                "jdbc:mysql://localhost:3306/hostel_management", "root", "1234")) {
+
+            
+            String checkMobileQuery = "SELECT COUNT(*) FROM students WHERE mobile_number = ?";
+            PreparedStatement pstCheckMobile = connection.prepareStatement(checkMobileQuery);
+            pstCheckMobile.setString(1, mobileNumber);
+            ResultSet rsMobile = pstCheckMobile.executeQuery();
+            if (rsMobile.next() && rsMobile.getInt(1) > 0) {
+                JOptionPane.showMessageDialog(this, "Mobile number already registered.");
+                return;
+            }
+
+            
+            String checkEmailQuery = "SELECT COUNT(*) FROM students WHERE email = ?";
+            PreparedStatement pstCheckEmail = connection.prepareStatement(checkEmailQuery);
+            pstCheckEmail.setString(1, emailId);
+            ResultSet rsEmail = pstCheckEmail.executeQuery();
+            if (rsEmail.next() && rsEmail.getInt(1) > 0) {
+                JOptionPane.showMessageDialog(this, "Email already registered.");
+                return;
+            }
+
+           
+            String query = "INSERT INTO students (first_name, last_name, email, username, password, mobile_number) " +
+                           "VALUES (?, ?, ?, ?, ?, ?)";
             PreparedStatement pst = connection.prepareStatement(query);
             pst.setString(1, firstName);
             pst.setString(2, lastName);
             pst.setString(3, emailId);
-            pst.setString(4, userName);  // Store username
-            pst.setString(5, plainPassword);  // Store password in plain text
+            pst.setString(4, userName);
+            pst.setString(5, password); 
             pst.setString(6, mobileNumber);
-            pst.setInt(7, 101);  // Set room_number or get from user input
 
-            // Execute the query
             int rowsInserted = pst.executeUpdate();
             if (rowsInserted > 0) {
                 JOptionPane.showMessageDialog(this, "Registration Successful!");
-                exitToMainMenu(null); // Redirect to main menu after success
+                exitToMainMenu(null); 
             } else {
                 JOptionPane.showMessageDialog(this, "Error: Could not register.");
             }
         } catch (SQLException ex) {
-            ex.printStackTrace();  // Print the stack trace to see the error message
-            JOptionPane.showMessageDialog(this, "Database Error: " + ex.getMessage());  // Show the specific error message
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Database Error: " + ex.getMessage());
         }
     }
 
 
+
     private void exitToMainMenu(ActionEvent e) {
         System.out.println("Attempting to open MainMenu...");
-        
+
         SwingUtilities.invokeLater(() -> {
             MainMenu mainMenu = new MainMenu();
             mainMenu.setVisible(true);
         });
 
         System.out.println("Closing StudentRegister window...");
-        this.dispose(); 
+        this.dispose();
     }
 }
